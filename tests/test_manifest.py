@@ -349,6 +349,8 @@ def test_manifest_modules_git_disallowed() -> None:
         "module-module3-source-git-url-not-http",
         "module-module4-source-git-no-tag-commit-branch",
         "module-module5-source-git-branch",
+        "module-module6-source-git-file-branch",
+        "module-module7-source-git-file-branch",
     }
     found_errors = set(ret["errors"])
     for e in errors:

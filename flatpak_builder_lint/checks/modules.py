@@ -1,13 +1,8 @@
-import re
 from collections.abc import Mapping
 from typing import Any
 
-from .. import config
+from .. import config, giturl
 from . import Check
-
-
-def _is_git_commit_hash(s: str) -> bool:
-    return re.match(r"[a-f0-9]{4,40}", s) is not None
 
 
 def _get_bundled_extensions_not_prefixed_with_appid(manifest: Mapping[str, Any]) -> list[str]:
@@ -37,6 +32,10 @@ class ModuleCheck(Check):
             if source.get("md5"):
                 self.errors.add(f"module-{module_name}-source-md5-deprecated")
 
+            url = source.get("url")
+            if url and giturl.is_branch(url):
+                self.errors.add(f"module-{module_name}-source-git-file-branch")
+
         if source_type == "git":
             commit = source.get("commit")
             branch = source.get("branch")
@@ -54,7 +53,9 @@ class ModuleCheck(Check):
                 self.errors.add(f"module-{module_name}-source-git-no-tag-commit-branch")
                 return
 
-            if branch and not _is_git_commit_hash(branch):
+            # We should actually not even need to check if this is a commit.
+            # `commit` should be used instead.
+            if branch and not giturl.is_git_commit_hash(branch):
                 self.errors.add(f"module-{module_name}-source-git-branch")
 
     def check_module(self, module: dict[str, Any]) -> None:
