@@ -321,6 +321,7 @@ def test_manifest_modules() -> None:
     errors = {
         "module-module1-source-sha1-deprecated",
         "module-module1-cleanup-debug",
+        "module-module1-source-dir-not-allowed",
     }
 
     ret = run_checks("tests/manifests/modules.json")

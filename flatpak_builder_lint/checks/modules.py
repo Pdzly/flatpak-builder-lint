@@ -37,6 +37,9 @@ class ModuleCheck(Check):
             if source.get("md5"):
                 self.errors.add(f"module-{module_name}-source-md5-deprecated")
 
+        if source_type == "dir":
+            self.errors.add(f"module-{module_name}-source-dir-not-allowed")
+
         if source_type == "git":
             commit = source.get("commit")
             branch = source.get("branch")
